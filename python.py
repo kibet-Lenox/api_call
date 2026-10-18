@@ -1,30 +1,31 @@
-import pandas as pd
+import requests
 
-data = {
-    "day":        ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    "eggs":       [312, 298, 320, 305, 290, 315, 308],
-    "feed_kg":    [18.5, 18.0, 19.2, 18.8, 17.5, 18.6, 19.0],
-    "deaths":     [0, 1, 0, 0, 2, 0, 0],
-    "pen":        ["A", "A", "A", "B", "B", "B", "A"],
-}
+url = "https://jsonplaceholder.typicode.com/users"
 
-df = pd.DataFrame(data)
+response = requests.get(url)
+#print(response.json())
 
-print("===Weekly egg production log:===")
-print(df.to_string())
-
-print("\nShape:", df.shape)
-print("\nSummary statistics:")
-print(df[["eggs", "feed_kg", "deaths"]].describe().round(1).to_string())
-
-#Adding the revenue coloumn
-df['revenue_kes'] = df["eggs"] * 18
-total = df['revenue_kes'].sum()
-
-print(f"\nTotal eggs this week:  {df['eggs'].sum()}")
-print(f"Average daily eggs:    {df['eggs'].mean():.1f}")
-print(f"Worst day (eggs):      {df.loc[df['eggs'].idxmin(), 'day']} ({df['eggs'].min()} eggs)")
-print(f"Best day (eggs):       {df.loc[df['eggs'].idxmax(), 'day']} ({df['eggs'].max()} eggs)")
-print()
-print(f"Total weekly revenue: {total} Ksh.")
-
+if response.status_code == 200:
+    data = response.json()
+    for user in data:
+        if user['id'] in [1, 2]:
+            name = user['name']
+            username = user['username']
+            email = user['email']
+            phone = user['phone']
+            city = user['address']['city']
+            website = user['website']
+            
+            print (f"User's name: {name}.")
+            print(f"     Username: {username}.")
+            print(f"     Email: {email}")
+            print(f"     City: {city}.")
+            print(f"     Website: {website}")
+            print()
+         
+            continue
+            
+      
+        
+else:
+    print("Request failed.", response.status_code)         
